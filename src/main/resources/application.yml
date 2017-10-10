@@ -1,0 +1,27 @@
+server:
+  port: 9999
+  context-path: /
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bootblog?useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.jdbc.Driver
+    password: admin
+    username: bootblog
+
+  jpa:
+    show-sql: true
+
+  thymeleaf:
+    cache: false
+
+securityconfig:
+  openway: yml #取值（yml代表配置文件读取权限信息，sql代表从数据库读取权限信息）
+  logoutsuccssurl: /
+  permitall: /rest/**,/bbs**,/login
+  deniedpage: /deny
+  #这里需要配置较详细的权限。注意权限不能互斥
+  urlroles: /role/index = admin;
+            /role/add = admin;
+            /role/edit/* = sa;
+            /role/delete/** = sa;
+            /order/delete/** = admin
