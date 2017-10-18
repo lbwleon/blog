@@ -68,18 +68,17 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Hello, <input style="font-style: italic;background-color: inherit; border: none" type="text" id="nickname" value="User" th:value="${#httpServletRequest.getAttribute('os')}"/></h3>
+                    <h3 class="panel-title">Hello, <input style="font-style: italic;background-color: inherit; border: none" type="text" id="nickname" value="User" th:value="${os}"/></h3>
                 </div>
                 <div class="panel-body" style="height: 380px; overflow-y: scroll; overflow: auto" id="messageWindow">
 
 
                 </div>
-
             </div>
 
             <div class="row">
                 <div class="col-xs-9 col-md-10">
-                    <textarea class="form-control" rows="3" id="message"></textarea>
+                    <input type="text" class="form-control" placeholder="Message" id="message" />
                 </div>
                 <div class="col-xs-3 col-md-2">
                     <button class="btn btn-primary btn-block" id="send"><span class="glyphicon glyphicon-send"></span> 发送</button>
@@ -122,6 +121,12 @@
             var msg = "{'content':'"+ $("#message").val() + "', 'nickname':'" + $("#nickname").val() +"'}";
             stompClient.send("/app/all", {}, msg);
             $("#message").val("");
+        });
+
+        $('#message').keypress(function(e){
+            if(e.keyCode == 13){
+                $("#send").click();
+            }
         });
     });
 
