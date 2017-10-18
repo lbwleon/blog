@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/admin/index")
                 .and().authorizeRequests()
-                .antMatchers("/","/pages/**").permitAll()
+                .antMatchers("/","/pages/**","/ichat","/websocket/**","/app/**").permitAll()
                 .antMatchers("/images/**", "/ui/**","/checkcode", "/scripts/**", "/styles/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

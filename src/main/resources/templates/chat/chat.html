@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>iChat</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <style>
+        .friend{
+            border: none;
+            background-color: #FFFFFF;
+            padding: 5px;
+        }
+
+        .friend:hover{
+            border: solid 1px #337AB7;
+            border-radius: 3px;
+        }
+
+        .f-nickname{
+            font-family: "微软雅黑";
+        }
+
+        .f-image{
+            width: 43px;
+            height: 43px;
+        }
+
+        .message-box-left{
+            background-color: #FA8072;
+            color: #FFFFFF;
+            border-radius: 3px;
+            display: inline-block;
+            padding: 5px 10px;
+        }
+
+        .user-nickname{
+            margin-bottom: 2px;
+            display: inline-block;
+        }
+
+        .user-time{
+            margin-bottom: 2px;
+            display: inline-block;
+            color: #ADADAD;
+        }
+
+        .message-div{
+            float: left;
+            margin-left: 5px;
+            width: 100%;
+            margin-bottom: 5px;
+            position: relative;
+        }
+    </style>
+</head>
+<body style="background-color: #f1f1f1; padding-bottom: 0">
+
+<div th:insert="~{header :: nav}"></div>
+
+<!-- Start Content -->
+<div style="margin-top: 60px">
+
+    <div class="row center-block">
+
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Hello, <input style="font-style: italic;background-color: inherit; border: none" type="text" id="nickname" value="User" th:value="${#httpServletRequest.getAttribute('os')}"/></h3>
+                </div>
+                <div class="panel-body" style="height: 380px; overflow-y: scroll; overflow: auto" id="messageWindow">
+
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-9 col-md-10">
+                    <textarea class="form-control" rows="3" id="message"></textarea>
+                </div>
+                <div class="col-xs-3 col-md-2">
+                    <button class="btn btn-primary btn-block" id="send"><span class="glyphicon glyphicon-send"></span> 发送</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/notice', function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+        });
+    }
+
+    function showMessage(message) {
+        $("#messageWindow").append(
+            '<div class="message-div row">' +
+            '<br style="margin-left: 55px" />'+
+            '<p class="user-nickname">' + message.nickname + '</p> <p class="user-time">'+message.sendTime+'</p>'+
+            '<br style="margin-left: 55px" /> <div class="message-box-left">' + message.content + '</div></div>'
+        );
+    }
+
+    $(function () {
+        connect();
+        $("#send").click(function () {
+            var msg = "{'content':'"+ $("#message").val() + "', 'nickname':'" + $("#nickname").val() +"'}";
+            stompClient.send("/app/all", {}, msg);
+            $("#message").val("");
+        });
+    });
+
+</script>
+<!-- End Content -->
+</body>
+</html>

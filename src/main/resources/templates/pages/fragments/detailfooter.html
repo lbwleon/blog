@@ -34,8 +34,8 @@
 
         $(function () {
             $.get(basepath+'/pages/re_articles',function (data) {
-                var re_articles = data.data.data;
-
+                var re_articles = data.data;
+                $("#recentdiv").empty();
                 console.info(re_articles);
                 $.each(re_articles,function (i,v) {
                     console.info(v.id);

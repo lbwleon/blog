@@ -6,12 +6,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import xyz.isnull.blog.core.config.security.SecuritySettings;
 import xyz.isnull.blog.core.repository.expand.ExpandJpaRepositoryFactoryBean;
 
 @EnableCaching
 @ComponentScan("xyz.isnull.blog")
 @SpringBootApplication
+@EnableWebSocket
 @EnableConfigurationProperties(SecuritySettings.class)
 public class BlogApplication {
 
